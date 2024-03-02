@@ -1,11 +1,13 @@
 package com.example.eventexplorerapp
 
 import android.annotation.SuppressLint
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.height
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Home
+import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.outlined.AccountCircle
@@ -30,6 +32,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
@@ -90,10 +93,7 @@ fun EventScreen() {
     val navController = rememberNavController()
     Scaffold (
         topBar = {
-            MyTopBar(
-                canNavigateBack = navController.previousBackStackEntry != null,
-                navigateUp = {navController.navigateUp()}
-            )
+            MyTopBar()
         },
         bottomBar = {
             BottomBar(items = items, navController = navController)
@@ -189,44 +189,24 @@ fun BottomBar(items:List<BottomNavigationItems>,navController: NavController){
 @Composable
 fun MyTopBar(
     currentLocation: String = "Akhalia, Sylhet,\nBangladesh",
-    isHome: Boolean = false,
-    isSearch: Boolean = false,
-    canNavigateBack: Boolean ,
-    navigateUp: () -> Unit ,
     @SuppressLint("ModifierParameter") modifier: Modifier = Modifier,
 
 ) {
     TopAppBar(
         title = {
-            if(isHome or isSearch){
+            Row{
                 Text(
                     text = currentLocation,
                     style = MaterialTheme.typography.bodyLarge,
-                    fontWeight = FontWeight.Bold
+                    fontWeight = FontWeight.Bold,
+                    textDecoration = TextDecoration.Underline
                 )
+                Icon(imageVector = Icons.Filled.KeyboardArrowDown, contentDescription = "Arrow down")
             }
         },
         colors = TopAppBarDefaults.mediumTopAppBarColors(
             containerColor = MaterialTheme.colorScheme.primaryContainer
         ),
-        actions = {
-            if(isHome or isSearch){
-                IconButton(onClick = {}) {
-                    Icon(Icons.Filled.MoreVert, "Filter")
-                }
-            }
-
-        },
-        navigationIcon = {
-            if (canNavigateBack) {
-                IconButton(onClick = navigateUp) {
-                    Icon(
-                        imageVector = Icons.Filled.ArrowBack,
-                        contentDescription = "Back"
-                    )
-                }
-            }
-        },
         modifier = modifier
     )
 }
