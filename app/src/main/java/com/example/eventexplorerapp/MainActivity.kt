@@ -11,7 +11,6 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.eventexplorerapp.ui.FlashScreen
-import com.example.eventexplorerapp.ui.HomeScreen
 import com.example.eventexplorerapp.ui.LoginScreen
 import com.example.eventexplorerapp.ui.RegisterScreen
 import com.example.eventexplorerapp.ui.theme.AppTheme
@@ -28,6 +27,7 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
+                    GetCurrentLocationAndAddress()
 
                     NavHost(navController = navController, startDestination = "flash" ){
                         composable("flash"){ FlashScreen(navController = navController) }
@@ -35,7 +35,6 @@ class MainActivity : ComponentActivity() {
                         composable("signup"){ RegisterScreen(navController = navController)}
                         composable("EventScreen"){ EventScreen()}
                     }
-//                    EventScreen()
                 }
             }
         }

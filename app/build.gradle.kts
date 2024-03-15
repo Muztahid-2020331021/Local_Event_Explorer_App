@@ -88,4 +88,7 @@ dependencies {
     testImplementation("androidx.arch.core:core-testing:$arch_version")
     testImplementation ("androidx.lifecycle:lifecycle-runtime-testing:$lifecycle_version")
     implementation ("com.google.code.gson:gson:2.8.7")
+    implementation("com.google.android.gms:play-services-location:20.0.0")
+    implementation("com.android.volley:volley:1.2.1")
+
 }
