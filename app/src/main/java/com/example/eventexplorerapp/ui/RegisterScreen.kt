@@ -1,5 +1,7 @@
 package com.example.eventexplorerapp.ui
 
+import android.content.Context
+import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -29,6 +31,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.RectangleShape
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
@@ -37,6 +40,11 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.eventexplorerapp.ui.theme.AppTheme
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseAuthEmailException
+import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException
+import com.google.firebase.auth.FirebaseAuthUserCollisionException
+import com.google.firebase.auth.FirebaseAuthWeakPasswordException
 
 @Composable
 fun RegisterScreen(
@@ -49,6 +57,8 @@ fun RegisterScreen(
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
     var confirmPassword by remember { mutableStateOf("") }
+
+    val context = LocalContext.current
 
     Column(
         modifier = modifier
@@ -151,7 +161,13 @@ fun RegisterScreen(
 
         Button(
             onClick = {
-
+                if (fullName.isNotEmpty() && email.isNotEmpty() && password.isNotEmpty() && password == confirmPassword) {
+                    registerUser(email, password, navController, context)
+                }
+                else
+                {
+                    showToast(context, "Logical Error")
+                }
             },
             shape = RectangleShape,
             modifier = Modifier
@@ -195,6 +211,31 @@ fun RegisterScreen(
 
 }
 
+
+private fun registerUser(email: String, password: String, navController: NavController, context: Context) {
+    val auth = FirebaseAuth.getInstance()
+    auth.createUserWithEmailAndPassword(email, password)
+        .addOnCompleteListener { task ->
+            if (task.isSuccessful) {
+                showToast(context, "Registration successful")
+                navController.navigate("login")
+                // Navigate to the next screen if registration is successful
+                // navController.navigate("next_screen")
+            } else {
+                val message = when (task.exception) {
+                    is FirebaseAuthWeakPasswordException -> "Password is too weak"
+                    is FirebaseAuthEmailException -> "Invalid email address"
+                    is FirebaseAuthUserCollisionException -> "The email is already in use by another account"
+                    else -> "Registration failed. Please try again later."
+                }
+                showToast(context, message)
+            }
+        }
+}
+
+private fun showToast(context: Context, message: String) {
+    Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
+}
 //@Preview(showBackground = true, showSystemUi = true)
 //@Composable
 //fun RegisterScreenPreview(){

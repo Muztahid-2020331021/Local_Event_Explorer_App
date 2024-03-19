@@ -22,6 +22,8 @@ data class Event(
     val date : String = "",
     val description : String = "",
     val location : String = "",
+    val latitude : Double = 0.0,
+    val longitude: Double = 0.0,
     var id:Int = -1,
     val organizer: String = "",
     val phoneNumber: String = ""

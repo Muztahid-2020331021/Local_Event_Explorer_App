@@ -1,9 +1,9 @@
 package com.example.eventexplorerapp.ui
 
+import android.annotation.SuppressLint
 import android.widget.CalendarView
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -17,6 +17,7 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -31,75 +32,87 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.navigation.NavController
+import com.example.eventexplorerapp.BottomBar
+import com.example.eventexplorerapp.MyTopBar
 import com.example.eventexplorerapp.data.EventList
 import com.example.eventexplorerapp.data.selectedEvent
 
+@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun AfterClickOnEvent(
-    contentPadding: PaddingValues,
     navController : NavController
 ){
     val event = EventList.eventsNearby[selectedEvent]
-
-    Column (
-        modifier = Modifier
-            .padding(20.dp)
-    ){
-        val upSpace = contentPadding.calculateTopPadding()
-        Spacer(modifier = Modifier.height(upSpace))
-        Column(
-            verticalArrangement = Arrangement.spacedBy(20.dp),
-            horizontalAlignment = Alignment.CenterHorizontally
+    Scaffold (
+        topBar = {
+            MyTopBar()
+        },
+        bottomBar = {
+            BottomBar(navController = navController)
+        }
+    ){contentPadding ->
+        Column (
+            modifier = Modifier
+                .padding(20.dp)
         ){
+            val upSpace = contentPadding.calculateTopPadding()
+            Spacer(modifier = Modifier.height(upSpace))
+            Column(
+                verticalArrangement = Arrangement.spacedBy(20.dp),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ){
 
-            ShowCard(event = event)
+                ShowCard(event = event)
 
-            Button(
-                onClick = {
-                          navController.navigate("MoreInfoScreen")
-                },
-                modifier = Modifier
-                    .size(height = 60.dp, width = 250.dp),
-                shape = RoundedCornerShape(15.dp),
-                colors = ButtonDefaults.buttonColors(MaterialTheme.colorScheme.primary),
-                elevation = ButtonDefaults.buttonElevation(defaultElevation = 10.dp)
-            ) {
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.spacedBy(10.dp),
+                Button(
+                    onClick = {
+                        navController.navigate("MoreInfoScreen")
+                    },
                     modifier = Modifier
-                        .fillMaxSize()
+                        .size(height = 60.dp, width = 250.dp),
+                    shape = RoundedCornerShape(15.dp),
+                    colors = ButtonDefaults.buttonColors(MaterialTheme.colorScheme.primary),
+                    elevation = ButtonDefaults.buttonElevation(defaultElevation = 10.dp)
                 ) {
-                    Text(
-                        text = "More Information",
-                        style = MaterialTheme.typography.bodyLarge,
-                        color = MaterialTheme.colorScheme.onPrimary,
-                        fontSize = 15.sp
-                    )
-                    Icon(
-                        imageVector = Icons.Filled.ArrowForward,
-                        contentDescription = "More Info",
-                        tint = MaterialTheme.colorScheme.onPrimary
-                    )
-                }
-            }
-
-            Text(
-                text = "Calendar",
-                fontSize = 30.sp,
-                fontWeight = FontWeight.Bold
-            )
-            var date by remember { mutableStateOf("") }
-            AndroidView(
-                factory = { CalendarView(it) },
-                update = {
-                    it.setOnDateChangeListener { _, year, month, day ->
-                        date = "$day - ${month + 1} - $year"
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.spacedBy(10.dp),
+                        modifier = Modifier
+                            .fillMaxSize()
+                    ) {
+                        Text(
+                            text = "More Information",
+                            style = MaterialTheme.typography.bodyLarge,
+                            color = MaterialTheme.colorScheme.onPrimary,
+                            fontSize = 15.sp
+                        )
+                        Icon(
+                            imageVector = Icons.Filled.ArrowForward,
+                            contentDescription = "More Info",
+                            tint = MaterialTheme.colorScheme.onPrimary
+                        )
                     }
                 }
-            )
+
+                Text(
+                    text = "Calendar",
+                    fontSize = 30.sp,
+                    fontWeight = FontWeight.Bold
+                )
+                var date by remember { mutableStateOf("") }
+                AndroidView(
+                    factory = { CalendarView(it) },
+                    update = {
+                        it.setOnDateChangeListener { _, year, month, day ->
+                            date = "$day - ${month + 1} - $year"
+                        }
+                    }
+                )
+            }
         }
     }
+
+
 }
 
 @Preview(showBackground = true, showSystemUi = true)

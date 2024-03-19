@@ -3,7 +3,7 @@ package com.example.eventexplorerapp.data
 var selectedEvent = -1
 var eventCategory : Category = Category.Basketball
 var isHome: Boolean = false
-
+var signedIn: Boolean = false
 
 object EventList {
     val eventsNearby = listOf(
